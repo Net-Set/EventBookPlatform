@@ -1,0 +1,1913 @@
+{
+	"info": {
+		"_postman_id": "a8b5c3d1-2e4f-4a5b-8c6d-9e0f1a2b3c4d",
+		"name": "EventBook Platform API",
+		"description": "Complete API collection for EventBook - Mini Event Booking Platform built with NestJS and Prisma",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"New User\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"New User\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"user\": {\n    \"id\": \"uuid\",\n    \"email\": \"newuser@example.com\",\n    \"name\": \"New User\",\n    \"role\": \"USER\"\n  },\n  \"access_token\": \"jwt_token_here\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('authToken', response.access_token);",
+									"    pm.environment.set('userId', response.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@eventbook.com\",\n  \"password\": \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with existing user credentials. This will automatically store the JWT token in environment variable."
+					},
+					"response": [
+						{
+							"name": "Admin Login Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"admin@eventbook.com\",\n  \"password\": \"admin123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"user\": {\n    \"id\": \"admin-uuid\",\n    \"email\": \"admin@eventbook.com\",\n    \"name\": \"Admin User\",\n    \"role\": \"ADMIN\"\n  },\n  \"access_token\": \"jwt_admin_token_here\"\n}"
+						},
+						{
+							"name": "User Login Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"user123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"user\": {\n    \"id\": \"user-uuid\",\n    \"email\": \"john@example.com\",\n    \"name\": \"John Doe\",\n    \"role\": \"USER\"\n  },\n  \"access_token\": \"jwt_user_token_here\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Authentication endpoints for user registration and login"
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						},
+						"description": "Get all events (public endpoint, no authentication required)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference featuring latest trends\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99,\n    \"imageUrl\": \"https://example.com/tech-conf.jpg\",\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Upcoming Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/upcoming",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"upcoming"
+							]
+						},
+						"description": "Get only upcoming events (events with dates in the future)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/events/upcoming",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events",
+										"upcoming"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Future Event\",\n    \"description\": \"An event happening in the future\",\n    \"date\": \"2025-06-15T09:00:00.000Z\",\n    \"location\": \"Future Venue\",\n    \"capacity\": 100,\n    \"price\": 50.00,\n    \"imageUrl\": null,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Event by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event to retrieve"
+								}
+							]
+						},
+						"description": "Get a specific event by its ID"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/events/event-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events",
+										"event-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"event-uuid-1\",\n  \"title\": \"Tech Conference 2024\",\n  \"description\": \"Annual technology conference featuring latest trends\",\n  \"date\": \"2024-06-15T09:00:00.000Z\",\n  \"location\": \"Convention Center\",\n  \"capacity\": 500,\n  \"price\": 99.99,\n  \"imageUrl\": \"https://example.com/tech-conf.jpg\",\n  \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n  \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Event Available Capacity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/:eventId/capacity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								":eventId",
+								"capacity"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event"
+								}
+							]
+						},
+						"description": "Get available capacity for a specific event (requires authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/events/event-uuid-1/capacity",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events",
+										"event-uuid-1",
+										"capacity"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "450"
+						}
+					]
+				},
+				{
+					"name": "Create Event (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New Tech Meetup\",\n  \"description\": \"A meetup for tech enthusiasts to network and learn\",\n  \"date\": \"2024-12-15T18:00:00.000Z\",\n  \"location\": \"Tech Hub Downtown\",\n  \"capacity\": 100,\n  \"price\": 25.00,\n  \"imageUrl\": \"https://example.com/meetup.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						},
+						"description": "Create a new event (requires admin authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"New Tech Meetup\",\n  \"description\": \"A meetup for tech enthusiasts to network and learn\",\n  \"date\": \"2024-12-15T18:00:00.000Z\",\n  \"location\": \"Tech Hub Downtown\",\n  \"capacity\": 100,\n  \"price\": 25.00,\n  \"imageUrl\": \"https://example.com/meetup.jpg\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"new-event-uuid\",\n  \"title\": \"New Tech Meetup\",\n  \"description\": \"A meetup for tech enthusiasts to network and learn\",\n  \"date\": \"2024-12-15T18:00:00.000Z\",\n  \"location\": \"Tech Hub Downtown\",\n  \"capacity\": 100,\n  \"price\": 25.00,\n  \"imageUrl\": \"https://example.com/meetup.jpg\",\n  \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n  \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Event (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Tech Meetup\",\n  \"description\": \"Updated description for the meetup\",\n  \"price\": 30.00\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event to update"
+								}
+							]
+						},
+						"description": "Update an existing event (requires admin authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Updated Tech Meetup\",\n  \"description\": \"Updated description for the meetup\",\n  \"price\": 30.00\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/events/event-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events",
+										"event-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"event-uuid-1\",\n  \"title\": \"Updated Tech Meetup\",\n  \"description\": \"Updated description for the meetup\",\n  \"date\": \"2024-06-15T09:00:00.000Z\",\n  \"location\": \"Convention Center\",\n  \"capacity\": 500,\n  \"price\": 30.00,\n  \"imageUrl\": \"https://example.com/tech-conf.jpg\",\n  \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n  \"updatedAt\": \"2024-01-15T11:00:00.000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Event (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event to delete"
+								}
+							]
+						},
+						"description": "Delete an event (requires admin authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/events/event-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"events",
+										"event-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Event deleted successfully\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Events management endpoints"
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventId\": \"event-uuid-1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Create a new booking for an event (requires authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"eventId\": \"event-uuid-1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"booking-uuid-1\",\n  \"userId\": \"user-uuid\",\n  \"eventId\": \"event-uuid-1\",\n  \"status\": \"CONFIRMED\",\n  \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n  \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n  \"event\": {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99,\n    \"imageUrl\": \"https://example.com/tech-conf.jpg\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get My Bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/my-bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"my-bookings"
+							]
+						},
+						"description": "Get all bookings for the authenticated user"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings/my-bookings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"my-bookings"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"booking-uuid-1\",\n    \"userId\": \"user-uuid\",\n    \"eventId\": \"event-uuid-1\",\n    \"status\": \"CONFIRMED\",\n    \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n    \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n    \"event\": {\n      \"id\": \"event-uuid-1\",\n      \"title\": \"Tech Conference 2024\",\n      \"description\": \"Annual technology conference\",\n      \"date\": \"2024-06-15T09:00:00.000Z\",\n      \"location\": \"Convention Center\",\n      \"capacity\": 500,\n      \"price\": 99.99,\n      \"imageUrl\": \"https://example.com/tech-conf.jpg\"\n    }\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Booking by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/:bookingId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "booking-uuid-1",
+									"description": "The ID of the booking to retrieve"
+								}
+							]
+						},
+						"description": "Get a specific booking by its ID (user can only access their own bookings)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings/booking-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"booking-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"booking-uuid-1\",\n  \"userId\": \"user-uuid\",\n  \"eventId\": \"event-uuid-1\",\n  \"status\": \"CONFIRMED\",\n  \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n  \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n  \"event\": {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99,\n    \"imageUrl\": \"https://example.com/tech-conf.jpg\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/:bookingId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "booking-uuid-1",
+									"description": "The ID of the booking to cancel"
+								}
+							]
+						},
+						"description": "Cancel a booking (user can only cancel their own bookings)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings/booking-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"booking-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"booking-uuid-1\",\n  \"userId\": \"user-uuid\",\n  \"eventId\": \"event-uuid-1\",\n  \"status\": \"CANCELLED\",\n  \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n  \"updatedAt\": \"2024-01-15T13:00:00.000Z\",\n  \"event\": {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99,\n    \"imageUrl\": \"https://example.com/tech-conf.jpg\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Event Bookings (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/event/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"event",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event"
+								}
+							]
+						},
+						"description": "Get all bookings for a specific event (requires admin authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings/event/event-uuid-1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"event",
+										"event-uuid-1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"booking-uuid-1\",\n    \"userId\": \"user-uuid-1\",\n    \"eventId\": \"event-uuid-1\",\n    \"status\": \"CONFIRMED\",\n    \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n    \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n    \"user\": {\n      \"id\": \"user-uuid-1\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\"\n    }\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Booking Statistics (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"stats"
+							]
+						},
+						"description": "Get booking statistics (requires admin authentication)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/bookings/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"stats"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"total\": 150,\n  \"confirmed\": 135,\n  \"cancelled\": 15\n}"
+						}
+					]
+				}
+			],
+			"description": "Booking management endpoints"
+		},
+		{
+			"name": "Admin Dashboard",
+			"item": [
+				{
+					"name": "Dashboard Overview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/dashboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"dashboard"
+							]
+						},
+						"description": "Get comprehensive dashboard statistics including users, events, bookings, and revenue (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/dashboard",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"dashboard"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"overview\": {\n    \"totalUsers\": 156,\n    \"totalEvents\": 23,\n    \"totalBookings\": 342,\n    \"totalRevenue\": 15420.50\n  },\n  \"bookings\": {\n    \"total\": 342,\n    \"confirmed\": 298,\n    \"cancelled\": 44,\n    \"confirmedPercentage\": 87,\n    \"cancelledPercentage\": 13,\n    \"totalRevenue\": 15420.50\n  },\n  \"events\": {\n    \"total\": 23,\n    \"upcoming\": 8,\n    \"past\": 15,\n    \"upcomingPercentage\": 35,\n    \"pastPercentage\": 65,\n    \"popularEvents\": [\n      {\n        \"id\": \"event-1\",\n        \"title\": \"Tech Conference 2024\",\n        \"date\": \"2024-06-15T09:00:00.000Z\",\n        \"capacity\": 500,\n        \"bookingCount\": 450,\n        \"occupancyRate\": 90\n      }\n    ]\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Get all users with their booking counts (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"users"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"user-1\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"role\": \"USER\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"_count\": {\n      \"bookings\": 5\n    }\n  },\n  {\n    \"id\": \"admin-1\",\n    \"name\": \"Admin User\",\n    \"email\": \"admin@eventbook.com\",\n    \"role\": \"ADMIN\",\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"_count\": {\n      \"bookings\": 0\n    }\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "User Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"stats"
+							]
+						},
+						"description": "Get user statistics including most active users (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/users/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"stats"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"total\": 156,\n  \"admins\": 2,\n  \"regularUsers\": 154,\n  \"activeUsers\": [\n    {\n      \"id\": \"user-1\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"joinedAt\": \"2024-01-15T10:30:00.000Z\",\n      \"totalBookings\": 12\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "All Events Detailed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"events"
+							]
+						},
+						"description": "Get all events with detailed statistics including occupancy rates (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"events"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"event-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99,\n    \"imageUrl\": \"https://example.com/tech-conf.jpg\",\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"status\": \"upcoming\",\n    \"confirmedBookings\": 450,\n    \"availableSpots\": 50,\n    \"occupancyRate\": 90\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Event Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/events/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"events",
+								"stats"
+							]
+						},
+						"description": "Get event statistics including upcoming vs past events and most popular events (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/events/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"events",
+										"stats"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"total\": 23,\n  \"upcoming\": 8,\n  \"past\": 15,\n  \"upcomingPercentage\": 35,\n  \"pastPercentage\": 65,\n  \"popularEvents\": [\n    {\n      \"id\": \"event-1\",\n      \"title\": \"Tech Conference 2024\",\n      \"date\": \"2024-06-15T09:00:00.000Z\",\n      \"capacity\": 500,\n      \"bookingCount\": 450,\n      \"occupancyRate\": 90\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Event Bookings Detailed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/events/:eventId/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"events",
+								":eventId",
+								"bookings"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "event-uuid-1",
+									"description": "The ID of the event"
+								}
+							]
+						},
+						"description": "Get detailed booking information for a specific event with statistics (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/events/event-uuid-1/bookings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"events",
+										"event-uuid-1",
+										"bookings"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"event\": {\n    \"id\": \"event-uuid-1\",\n    \"title\": \"Tech Conference 2024\",\n    \"description\": \"Annual technology conference\",\n    \"date\": \"2024-06-15T09:00:00.000Z\",\n    \"location\": \"Convention Center\",\n    \"capacity\": 500,\n    \"price\": 99.99\n  },\n  \"bookings\": [\n    {\n      \"id\": \"booking-1\",\n      \"status\": \"CONFIRMED\",\n      \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n      \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n      \"user\": {\n        \"id\": \"user-1\",\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\"\n      }\n    }\n  ],\n  \"statistics\": {\n    \"totalBookings\": 470,\n    \"confirmedBookings\": 450,\n    \"cancelledBookings\": 20,\n    \"availableSpots\": 50,\n    \"occupancyRate\": 90,\n    \"totalRevenue\": 44995.50\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "All Bookings Detailed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"bookings"
+							]
+						},
+						"description": "Get all bookings across the platform with user and event details (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/bookings",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"bookings"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"booking-1\",\n    \"status\": \"CONFIRMED\",\n    \"createdAt\": \"2024-01-15T12:00:00.000Z\",\n    \"updatedAt\": \"2024-01-15T12:00:00.000Z\",\n    \"user\": {\n      \"id\": \"user-1\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\"\n    },\n    \"event\": {\n      \"id\": \"event-1\",\n      \"title\": \"Tech Conference 2024\",\n      \"date\": \"2024-06-15T09:00:00.000Z\",\n      \"location\": \"Convention Center\",\n      \"price\": 99.99\n    }\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Booking Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/bookings/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"bookings",
+								"stats"
+							]
+						},
+						"description": "Get comprehensive booking statistics with percentages and revenue (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/bookings/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"bookings",
+										"stats"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"total\": 342,\n  \"confirmed\": 298,\n  \"cancelled\": 44,\n  \"confirmedPercentage\": 87,\n  \"cancelledPercentage\": 13,\n  \"totalRevenue\": 15420.50\n}"
+						}
+					]
+				},
+				{
+					"name": "Revenue Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/revenue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"revenue"
+							]
+						},
+						"description": "Get detailed revenue statistics and recent bookings (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/revenue",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"revenue"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"totalRevenue\": 15420.50,\n  \"confirmedBookingsCount\": 298,\n  \"averageBookingValue\": 51.75,\n  \"recentBookings\": [\n    {\n      \"id\": \"booking-1\",\n      \"eventTitle\": \"Tech Conference 2024\",\n      \"eventDate\": \"2024-06-15T09:00:00.000Z\",\n      \"price\": 99.99,\n      \"bookedAt\": \"2024-01-15T12:00:00.000Z\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Comprehensive admin dashboard endpoints for platform management and analytics"
+		},
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api"
+							]
+						},
+						"description": "Basic health check endpoint to verify API is running"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": "Hello World!"
+						}
+					]
+				}
+			],
+			"description": "General API endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set default headers",
+					"pm.request.headers.add({",
+					"    key: 'Accept',",
+					"    value: 'application/json'",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test to log response time",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"// Global test for successful responses",
+					"pm.test('Status code is success', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string",
+			"description": "Base URL for the EventBook API"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string",
+			"description": "JWT authentication token (automatically set after login)"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string",
+			"description": "Current authenticated user ID (automatically set after login)"
+		}
+	]
+}
