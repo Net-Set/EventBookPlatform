@@ -72,7 +72,7 @@ This project follows a modern full-stack architecture with:
 - **Database ORM**: Prisma 6.16.2
 - **Database**: MySQL
 - **Authentication**: JWT with Passport
-- **Password Hashing**: bcrypt
+- **Password Hashing**: bcrypt                                                                
 - **Validation**: class-validator & class-transformer
 
 ## 📋 Prerequisites

@@ -19,6 +19,7 @@ export default function EventDetailPage({ params }: EventDetailPageProps) {
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [seatCount, setSeatCount] = useState(1);
   
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
@@ -51,7 +52,7 @@ export default function EventDetailPage({ params }: EventDetailPageProps) {
       setBooking(true);
       setError('');
       
-      await bookingsService.createBooking({ eventId: event.id });
+      await bookingsService.createBooking({ eventId: event.id, seatCount });
       setBookingSuccess(true);
       
       const updatedEvent = await eventsService.getEvent(params.id);
@@ -211,22 +212,43 @@ export default function EventDetailPage({ params }: EventDetailPageProps) {
           )}
 
           {!isPastEvent && !isFullyBooked && !bookingSuccess && (
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8">
               {isAuthenticated ? (
-                <button
-                  onClick={handleBooking}
-                  disabled={booking}
-                  className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
-                >
-                  {booking ? 'Booking...' : `Book Now - $${event.price}`}
-                </button>
+                <div className="flex flex-col items-center">
+                  <div className="mb-4">
+                    <label htmlFor="seatCount" className="block text-sm font-medium text-gray-700 mb-2">
+                      Number of Seats
+                    </label>
+                    <select
+                      id="seatCount"
+                      value={seatCount}
+                      onChange={(e) => setSeatCount(Number(e.target.value))}
+                      className="min-w-[120px] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      {Array.from({ length: Math.min(10, availableSpots) }, (_, i) => i + 1).map((num) => (
+                        <option key={num} value={num}>
+                          {num} {num === 1 ? 'seat' : 'seats'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    onClick={handleBooking}
+                    disabled={booking}
+                    className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
+                  >
+                    {booking ? 'Booking...' : `Book ${seatCount} ${seatCount === 1 ? 'Seat' : 'Seats'} - $${(event.price * seatCount).toFixed(2)}`}
+                  </button>
+                </div>
               ) : (
-                <button
-                  onClick={() => router.push('/auth/login')}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
-                >
-                  Sign in to Book
-                </button>
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => router.push('/auth/login')}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
+                  >
+                    Sign in to Book
+                  </button>
+                </div>
               )}
             </div>
           )}

@@ -53,6 +53,7 @@ export interface Booking {
   id: string;
   userId: string;
   eventId: string;
+  seatCount: number;
   status: 'CONFIRMED' | 'CANCELLED';
   createdAt: string;
   updatedAt: string;
@@ -69,6 +70,7 @@ export interface Booking {
 
 export interface CreateBookingData {
   eventId: string;
+  seatCount?: number;
 }
 
 export interface DashboardStats {
@@ -149,6 +151,7 @@ export interface EventWithStats {
 
 export interface BookingWithDetails {
   id: string;
+  seatCount: number;
   status: 'CONFIRMED' | 'CANCELLED';
   createdAt: string;
   updatedAt: string;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { adminService } from '@/services/api';
+import { adminService, eventsService } from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import { 
   Users, 
@@ -14,9 +14,14 @@ import {
   Activity,
   BarChart3,
   PieChart,
-  Clock
+  Clock,
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X
 } from 'lucide-react';
-import { DashboardStats, UserStats, EventWithStats, BookingWithDetails, RevenueStats } from '@/types';
+import { DashboardStats, UserStats, EventWithStats, BookingWithDetails, RevenueStats, Event, CreateEventData } from '@/types';
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -27,6 +32,20 @@ export default function AdminDashboardPage() {
   const [revenueStats, setRevenueStats] = useState<RevenueStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Event management states
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [eventForm, setEventForm] = useState<CreateEventData>({
+    title: '',
+    description: '',
+    date: '',
+    location: '',
+    capacity: 1,
+    price: 0,
+    imageUrl: ''
+  });
+  const [formLoading, setFormLoading] = useState(false);
 
   const { user } = useAuthStore();
 
@@ -65,6 +84,102 @@ export default function AdminDashboardPage() {
     fetchData();
   }, [user]);
 
+  const handleCreateEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    try {
+      await eventsService.createEvent(eventForm);
+      setShowEventForm(false);
+      setEventForm({
+        title: '',
+        description: '',
+        date: '',
+        location: '',
+        capacity: 1,
+        price: 0,
+        imageUrl: ''
+      });
+      // Refresh events list
+      const updatedEvents = await adminService.getAllEventsDetailed();
+      setEvents(updatedEvents);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to create event');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleEditEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEvent) return;
+    
+    setFormLoading(true);
+    try {
+      await eventsService.updateEvent(editingEvent.id, eventForm);
+      setEditingEvent(null);
+      setShowEventForm(false);
+      setEventForm({
+        title: '',
+        description: '',
+        date: '',
+        location: '',
+        capacity: 1,
+        price: 0,
+        imageUrl: ''
+      });
+      // Refresh events list
+      const updatedEvents = await adminService.getAllEventsDetailed();
+      setEvents(updatedEvents);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update event');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string, eventTitle: string) => {
+    if (!confirm(`Are you sure you want to delete "${eventTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      await eventsService.deleteEvent(eventId);
+      // Refresh events list
+      const updatedEvents = await adminService.getAllEventsDetailed();
+      setEvents(updatedEvents);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to delete event');
+    }
+  };
+
+  const startEditEvent = (event: any) => {
+    setEditingEvent(event);
+    setEventForm({
+      title: event.title,
+      description: event.description,
+      date: event.date.slice(0, 16), // Format for datetime-local input
+      location: event.location,
+      capacity: event.capacity,
+      price: event.price,
+      imageUrl: event.imageUrl || ''
+    });
+    setShowEventForm(true);
+  };
+
+  const cancelEventForm = () => {
+    setShowEventForm(false);
+    setEditingEvent(null);
+    setEventForm({
+      title: '',
+      description: '',
+      date: '',
+      location: '',
+      capacity: 1,
+      price: 0,
+      imageUrl: ''
+    });
+  };
+
   if (loading) {
     return (
       <ProtectedRoute>
@@ -94,6 +209,7 @@ export default function AdminDashboardPage() {
     { id: 'overview', name: 'Overview', icon: BarChart3 },
     { id: 'users', name: 'Users', icon: Users },
     { id: 'events', name: 'Events', icon: Calendar },
+    { id: 'manage-events', name: 'Manage Events', icon: Edit },
     { id: 'bookings', name: 'Bookings', icon: BookOpen },
     { id: 'revenue', name: 'Revenue', icon: DollarSign }
   ];
@@ -420,6 +536,247 @@ export default function AdminDashboardPage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                               ${booking.event.price.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'manage-events' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">Manage Events</h2>
+                <button
+                  onClick={() => setShowEventForm(true)}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Create Event</span>
+                </button>
+              </div>
+
+              {showEventForm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                  <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {editingEvent ? 'Edit Event' : 'Create New Event'}
+                      </h3>
+                      <button
+                        onClick={cancelEventForm}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+
+                    <form onSubmit={editingEvent ? handleEditEvent : handleCreateEvent} className="space-y-4">
+                      <div>
+                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                          Event Title *
+                        </label>
+                        <input
+                          type="text"
+                          id="title"
+                          required
+                          value={eventForm.title}
+                          onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Enter event title"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                          Description *
+                        </label>
+                        <textarea
+                          id="description"
+                          required
+                          rows={3}
+                          value={eventForm.description}
+                          onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Enter event description"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+                          Date & Time *
+                        </label>
+                        <input
+                          type="datetime-local"
+                          id="date"
+                          required
+                          value={eventForm.date}
+                          onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                          Location *
+                        </label>
+                        <input
+                          type="text"
+                          id="location"
+                          required
+                          value={eventForm.location}
+                          onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Enter event location"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
+                            Capacity *
+                          </label>
+                          <input
+                            type="number"
+                            id="capacity"
+                            required
+                            min="1"
+                            value={eventForm.capacity}
+                            onChange={(e) => setEventForm({ ...eventForm, capacity: parseInt(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="100"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                            Price ($) *
+                          </label>
+                          <input
+                            type="number"
+                            id="price"
+                            required
+                            min="0"
+                            step="0.01"
+                            value={eventForm.price}
+                            onChange={(e) => setEventForm({ ...eventForm, price: parseFloat(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="99.99"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                          Image URL (optional)
+                        </label>
+                        <input
+                          type="url"
+                          id="imageUrl"
+                          value={eventForm.imageUrl}
+                          onChange={(e) => setEventForm({ ...eventForm, imageUrl: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="https://example.com/image.jpg"
+                        />
+                      </div>
+
+                      <div className="flex justify-end space-x-3 pt-4">
+                        <button
+                          type="button"
+                          onClick={cancelEventForm}
+                          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={formLoading}
+                          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+                        >
+                          <Save className="h-4 w-4" />
+                          <span>{formLoading ? 'Saving...' : (editingEvent ? 'Update Event' : 'Create Event')}</span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg border border-gray-200">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">All Events</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-100">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Event
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Capacity
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Price
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {events.map((event) => (
+                          <tr key={event.id}>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">{event.title}</div>
+                                <div className="text-sm text-gray-500">{event.location}</div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              {event.confirmedBookings} / {event.capacity}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              ${event.price}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                event.status === 'upcoming' 
+                                  ? 'bg-green-50 text-green-700 border-green-200' 
+                                  : 'bg-gray-50 text-gray-700 border-gray-200'
+                              }`}>
+                                {event.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => startEditEvent(event)}
+                                  className="text-indigo-600 hover:text-indigo-900"
+                                  title="Edit event"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteEvent(event.id, event.title)}
+                                  className="text-red-600 hover:text-red-900"
+                                  title="Delete event"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}

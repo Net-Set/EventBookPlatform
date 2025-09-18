@@ -8,6 +8,7 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   const eventDate = new Date(event.date);
+  // Note: _count.bookings represents total booked seats, not number of bookings
   const availableSpots = event.capacity - event._count.bookings;
   const isFullyBooked = availableSpots <= 0;
 

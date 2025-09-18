@@ -35,6 +35,7 @@ CREATE TABLE bookings (
     id VARCHAR(191) NOT NULL PRIMARY KEY,
     userId VARCHAR(191) NOT NULL,
     eventId VARCHAR(191) NOT NULL,
+    seatCount INT NOT NULL DEFAULT 1,
     status ENUM('CONFIRMED', 'CANCELLED') NOT NULL DEFAULT 'CONFIRMED',
     createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
@@ -107,9 +108,9 @@ INSERT INTO events (id, title, description, date, location, capacity, price, ima
 );
 
 -- Insert sample bookings
-INSERT INTO bookings (id, userId, eventId, status) VALUES 
-('booking001', 'user001', 'event001', 'CONFIRMED'),
-('booking002', 'user001', 'event003', 'CONFIRMED');
+INSERT INTO bookings (id, userId, eventId, seatCount, status) VALUES 
+('booking001', 'user001', 'event001', 2, 'CONFIRMED'),
+('booking002', 'user001', 'event003', 1, 'CONFIRMED');
 
 -- Show tables to verify creation
 SHOW TABLES;

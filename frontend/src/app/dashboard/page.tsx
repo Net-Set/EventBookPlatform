@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MapPin, DollarSign, X } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, X, Users } from 'lucide-react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { bookingsService } from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
@@ -209,8 +209,13 @@ function BookingCard({ booking, onCancel, isCancelling, showCancelButton, isCanc
         </div>
 
         <div className="flex items-center text-sm text-gray-600">
+          <Users className="h-4 w-4 mr-2" />
+          {booking.seatCount} {booking.seatCount === 1 ? 'seat' : 'seats'}
+        </div>
+
+        <div className="flex items-center text-sm text-gray-600">
           <DollarSign className="h-4 w-4 mr-2" />
-          ${booking.event.price}
+          ${(booking.event.price * booking.seatCount).toFixed(2)} ({booking.seatCount} × ${booking.event.price})
         </div>
       </div>
 

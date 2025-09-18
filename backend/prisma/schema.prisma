@@ -55,6 +55,7 @@ model Booking {
   id        String        @id @default(cuid())
   userId    String
   eventId   String
+  seatCount Int           @default(1)
   status    BookingStatus @default(CONFIRMED)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
